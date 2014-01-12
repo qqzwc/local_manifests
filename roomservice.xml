@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remove-project name="CyanogenMod/android_bootable_recovery" />
+
+  <project name="CyanogenMod/android_device_motorola_targa" path="device/motorola/targa" remote="github" />
+  <project name="CyanogenMod/android_device_motorola_omap4-common" path="device/motorola/omap4-common" remote="github" />
+  <project name="CyanogenMod/android_kernel_motorola_omap4-common" path="kernel/motorola/omap4-common" remote="github" />
+  <project name="MoKee/android_vendor_motorola_targa" path="vendor/motorola/targa" revision="kk_mkt" />
+  <project name="MoKee/android_vendor_motorola_omap4-common" path="vendor/motorola/omap4-common"  revision="kk_mkt" />
+  <project name="Hashcode/android_bootable_recovery" path="bootable/recovery"  revision="twrp2.7-safestrap" />
+</manifest>

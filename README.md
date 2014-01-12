@@ -1,0 +1,5 @@
+此为本人关于local_manifests的演示，供新手参考
+
+演示了如何添加项目，并移除主代码的项目等等
+
+在.repo目录下新建local_manifests文件夹，在该文件夹下参考本xml文件建立自己的xml

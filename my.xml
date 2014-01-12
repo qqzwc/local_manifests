@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+<remote name="omapzoom" fetch="git://git.omapzoom.org/" />
+<remote name="gh" fetch="git://github.com/" />
+
+
+<remove-project name="MoKee/android_bootable_recovery" />
+
+<project path="bootable/recovery" name="qqzwc/TWRP_cn" remote="gh" revision="twrp2.6" />
+<project path="kernel/lge/star" name="pengus77/kowalski" remote="gh" revision="exp" />
+<project path="device/lge/p990" name="hjunii/android_device_lge_p990" remote="gh" revision="cm-11.0" />
+<project path="vendor/lge" name="hjunii/proprietary_vendor_lge" remote="gh" revision="cm-11.0" />
+</manifest>
