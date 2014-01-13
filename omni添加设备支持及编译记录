@@ -1,0 +1,174 @@
+官方参考
+http://docs.omnirom.org/Porting_Omni_To_Your_Device
+
+
+第一步：添加需要的文件
+
+在device目录放置motorola/targa
+
+在device/motorola/targa新建文件vendorsetup.sh
+内容为
+add_lunch_combo omni_targa-userdebug
+add_lunch_combo full_targa-userdebug
+
+其中的omni_targa-userdebug与当前目录的omni_targa.mk对应
+
+
+打开安卓源代码.repo目录，新建文件夹local_manifests
+
+保存以下内容为xt875.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <project name="MoKee/android_device_motorola_targa" path="device/motorola/targa" remote="github" revision="refs/heads/kk_mkt" />
+  <project name="MoKee/android_kernel_motorola_omap4-common" path="kernel/motorola/omap4-common" remote="github" revision="refs/heads/kk_mkt" />
+  <project name="MoKee/android_vendor_motorola_targa" path="vendor/motorola/targa" remote="github" revision="refs/heads/kk_mkt" />
+  <project name="MoKee/android_device_motorola_omap4-common" path="device/motorola/omap4-common" remote="github" revision="refs/heads/kk_mkt" />
+  <project name="MoKee/android_vendor_motorola_omap4-common" path="vendor/motorola/omap4-common" remote="github" revision="refs/heads/kk_mkt" />
+
+  <remove-project name="android_bootable_recovery" />
+  <project name="Hashcode/android_bootable_recovery" path="bootable/recovery" remote="github" revision="twrp2.7-safestrap" />
+</manifest>
+
+其中的remote="github"必须在.repo/manifests/default.xml定义
+
+
+第二步：
+在build/core/product_config.mk的第197行
+修改current_product_makefile :=
+为
+current_product_makefile :=~/omnirom/device/motorola/targa/omni_targa.mk
+
+第三步：
+
+执行./device/common/populate-new-device.sh motorola targa
+添加新设备支持
+
+第四步：
+执行 . build/envsetup.sh
+
+第五步：
+执行
+lunch
+
+结果
+
+You're building on Linux
+
+Lunch menu... pick a combo:
+     1. aosp_arm-eng
+     2. aosp_x86-eng
+     3. aosp_mips-eng
+     4. vbox_x86-eng
+     5. mini_mips-userdebug
+     6. mini_armv7a_neon-userdebug
+     7. mini_x86-userdebug
+     8. full_targa-userdebug
+     9. omni_targa-userdebug
+
+Which would you like? [aosp_arm-eng] 8
+WARNING: device/motorola/targa/omni.dependencies file not found
+(下面这个表的内容大部分是由BoardConfig.mk提供
+因而需要在这个文件末尾添加
+# Processor
+TARGET_NO_BOOTLOADER := false
+TARGET_BOARD_PLATFORM := omap4
+TARGET_BOOTLOADER_BOARD_NAME := targa
+TARGET_CPU_SMP := true
+TARGET_CPU_VARIANT := cortex-a9
+TARGET_ARCH_VARIANT_FPU := neon
+ARCH_ARM_HAVE_TLS_REGISTER := true
+DEVICE_RESOLUTION := 540x960
+)
+
+============================================
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=4.4.2
+TARGET_PRODUCT=full_targa
+TARGET_BUILD_VARIANT=userdebug
+TARGET_BUILD_TYPE=release
+TARGET_BUILD_APPS=
+TARGET_ARCH=arm
+TARGET_ARCH_VARIANT=armv7-a-neon
+TARGET_CPU_VARIANT=cortex-a9
+HOST_ARCH=x86
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-3.5.0-44-generic-x86_64-with-Ubuntu-12.04-precise
+HOST_BUILD_TYPE=release
+BUILD_ID=KOT49H
+OUT_DIR=/home/winzone/omnirom/out
+============================================
+
+
+
+
+cp arch/arm/configs/cyanogenmod_220k_defconfig .config
+
+make ARCH=arm CROSS_COMPILE="/home/winzone/mokee/prebuilts/misc/linux-x86/ccache/ccache /home/winzone/mokee/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-" oldconfig
+
+make ARCH=arm CROSS_COMPILE="/home/winzone/mokee/prebuilts/misc/linux-x86/ccache/ccache /home/winzone/mokee/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-" -j4
+
+
+make  -C kernel/lge/gproj O=/home/winzone/mokee/out/target/product/e980/obj/KERNEL_OBJ ARCH=arm CROSS_COMPILE="/home/winzone/mokee/prebuilts/misc/linux-x86/ccache/ccache /home/winzone/mokee/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-" VARIANT_DEFCONFIG= SELINUX_DEFCONFIG= cyanogenmod_220k_defconfig
+
+make  -C kernel/lge/gproj O=/home/winzone/mokee/out/target/product/e980/obj/KERNEL_OBJ ARCH=arm CROSS_COMPILE="/home/winzone/mokee/prebuilts/misc/linux-x86/ccache/ccache /home/winzone/mokee/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-" headers_install
+
+make  -C kernel/lge/gproj O=/home/winzone/mokee/out/target/product/e980/obj/KERNEL_OBJ ARCH=arm CROSS_COMPILE="/home/winzone/mokee/prebuilts/misc/linux-x86/ccache/ccache /home/winzone/mokee/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-" zImage
+
+----- Made recovery filesystem --------/home/winzone/android/out/target/product/targa/recovery/root
+----- Making uncompressed recovery ramdisk ------
+/home/winzone/android/out/host/linux-x86/bin/mkbootfs /home/winzone/android/out/target/product/targa/recovery/root > /home/winzone/android/out/target/product/targa/ramdisk-recovery.cpio
+----- Making recovery ramdisk ------
+/home/winzone/android/out/host/linux-x86/bin/minigzip < /home/winzone/android/out/target/product/targa/ramdisk-recovery.cpio > /home/winzone/android/out/target/product/targa/ramdisk-recovery.img
+----- Making recovery image ------
+Made recovery image: /home/winzone/android/out/target/product/targa/recovery.img
+
+
+build/tools/generate-notice-files.py  /home/winzone/android/out/target/product/targa/obj/NOTICE.txt  /home/winzone/android/out/target/product/targa/obj/NOTICE.html "Notices for files contained in the filesystem images in this directory:" /home/winzone/android/out/target/product/targa/obj/NOTICE_FILES/src
+Combining NOTICE files into HTML
+Combining NOTICE files into text
+Installed file list: /home/winzone/android/out/target/product/targa/installed-files.txt
+Target system fs image: /home/winzone/android/out/target/product/targa/obj/PACKAGING/systemimage_intermediates/system.img
+Running:  mkyaffs2image -f /home/winzone/android/out/target/product/targa/system /home/winzone/android/out/target/product/targa/obj/PACKAGING/systemimage_intermediates/system.img /home/winzone/android/out/target/product/targa/root/file_contexts system
+Install system fs image: /home/winzone/android/out/target/product/targa/system.img
+
+Installed file list: /home/winzone/android/out/target/product/targa/installed-files.txt
+Target system fs image: /home/winzone/android/out/target/product/targa/obj/PACKAGING/systemimage_intermediates/system.img
+Running:  mkyaffs2image -f /home/winzone/android/out/target/product/targa/system /home/winzone/android/out/target/product/targa/obj/PACKAGING/systemimage_intermediates/system.img /home/winzone/android/out/target/product/targa/root/file_contexts system
+Install system fs image: /home/winzone/android/out/target/product/targa/system.img
+Package target files: /home/winzone/android/out/target/product/targa/obj/PACKAGING/target_files_intermediates/cm_targa-target_files-e6f36c227f.zip
+Package OTA: /home/winzone/android/out/target/product/targa/cm_targa-ota-e6f36c227f.zip
+MKBOOTIMG= \
+	device/motorola/omap4-common/releasetools/common_ota_from_target_files -v \
+	   -p /home/winzone/android/out/host/linux-x86 \
+	   -k build/target/product/security/testkey \
+	   --backup=true \
+	   --override_device=auto \
+	   /home/winzone/android/out/target/product/targa/obj/PACKAGING/target_files_intermediates/cm_targa-target_files-e6f36c227f.zip /home/winzone/android/out/target/product/targa/cm_targa-ota-e6f36c227f.zip
+unzipping target target-files...
+  running:  unzip -o -q /home/winzone/android/out/target/product/targa/obj/PACKAGING/target_files_intermediates/cm_targa-target_files-e6f36c227f.zip -d /tmp/targetfiles-fkk5Vp
+--- target info ---
+blocksize                 = (int) 131072
+build.prop                = (dict) {'ro.mot.dpmext ': ' true', 'ro.HorizontalBUA': 'true', 'ro.media.camcorder.mms': '3gp,h264,15,128000,amrnb,12200,8000,1', 'ro.media.camcorder.qvga': 'mp4,h264,15,500000,aac,64000,44100,2', 'persist.ril.tcmd.ttydevice': '/dev/usb/tty2-1:1.3', 'ro.url.legal': 'http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html', 'ro.sf.lcd_density': '240', 'ro.build.product': 'cdma_targa', 'wifi.supplicant_scan_interval': '90', 'ro.ngp_available': '1', 'ro.mot.deep.sleep.supported': 'true', 'ro.build.id': 'KOT49H', 'ril.rat': 'LTE', 'ro.com.android.dateformat': 'MM-dd-yyyy', 'ro.telephony.ril.v3': 'writeaidonly,usevoicetechfordata', 'persist.ril.mux.noofchannels': '10', 'ro.cdma.home.operator.numeric': '310004', 'com.ti.omap_enhancement': 'true', 'ro.bq.gpu_to_cpu_unsupported': '1', 'ro.com.google.clientidbase.am': 'android-verizon', 'com.motorola.cg.tnHeight': '160', 'ro.setupwizard.enterprise_mode': '1', 'ro.mot.lte_on_cdma': '1', 'ro.media.camcorder.cif': 'mp4,h264,30,1500000,aac,128000,44100,2', 'dalvik.vm.heapmaxfree': '8m', 'ro.gsm.2nd_data_retry_config': 'max_retries=infinite,default_randomization=2000,0,0,80000,125000,485000,905000', 'com.motorola.cg.lowres': '1', 'ro.build.fingerprint': 'verizon/targa_vzw/cdma_targa:4.4.2/KOT49H/20140112:user/release-keys', 'ro.bluetooth.remote.autoconnect': 'true', 'ro.product.manufacturer': 'Motorola', 'ro.com.google.clientidbase.gmm': 'android-motorola', 'ro.build.description': 'cdma_targa-user 4.4.2 KOT49H 20140112 release-keys', 'dalvik.vm.heapstartsize': '8m', 'persist.ril.modem.ttydevice': '/dev/ttyUSB4', 'ro.product.brand': 'verizon', 'ro.ril.svlte1x': 'true', 'wifi.interface': 'wlan0', 'ro.cdma.otaspnumschema': 'SELC,1,80,99', 'ro.com.google.clientidbase.yt': 'android-verizon', 'mot.proximity.distance': '60', 'com.motorola.cg.tndisplay': '1', 'ro.media.capture.flash': 'led', 'ro.com.google.gmsversion': '4.1_r3', 'ro.cmlegal.url': 'http://www.cyanogenmod.org/docs/privacy', 'dalvik.vm.heapsize': '256m', 'ro.modem_available': '0', 'ro.gsm.data_retry_config': 'default_randomization=2000,max_retries=infinite,0,0,80000,125000,485000,905000', 'ril.subscription.types': 'NV,RUIM', 'ro.com.google.clientid': 'android-motorola', 'dalvik.vm.heaptargetutilization': '0.75', 'persist.radio.vzw.cdma.mdn': '', 'ro.mot.phonemode.vzw4gphone': '1', 'ro.build.host': 'winzone-K42JP', 'ro.com.android.dataroaming': 'false', 'telephony.lteOnCdmaDevice': '1', 'ro.product.model': 'XT875', 'windowsmgr.max_events_per_sec': '90', 'persist.ril.features': '0x90A', 'dalvik.vm.heapminfree': '2m', 'ro.setupwizard.enable_bypass': '1', 'persist.ril.mux.retries': '500', 'ro.media.panorama.frameres': '1280x720', 'ro.horizontalVOD': 'false', 'ro.board.platform': 'omap4', 'ro.mot.setuptype': '2', 'persist.sys.usb.config': 'mtp,adb', 'ro.mot.hw.calibratedImager': '1', 'drm.service.enabled': 'true', 'wifi.ap.interface': 'wlan0', 'hwui.render_dirty_regions': 'false', 'rild.libargs': '-d /dev/ttyO0', 'ro.mot.ril.danlist': '611,*611,#611', 'ro.mot.hw.HAC': '1', 'persist.radio.ap.phonetype': '2', 'ro.horizontalEmail': 'false', 'ro.cdma.home.operator.isnan': '1', 'ro.build.version.release': '4.4.2', 'ro.mot.hw.uaprof': 'http://uaprof.vtext.com/mot/xt875/xt875.xml', 'ro.build.version.codename': 'REL', 'net.bt.name': 'Android', 'ro.build.type': 'userdebug', 'ro.config.alarm_alert': 'Alarm_Classic.ogg', 'softap.interface': 'wlan0', 'ril.wrigley.modem.tty': '/dev/usb/tty1-2:1.10', 'ro.cdma.home.operator.alpha': 'Verizon', 'ro.opengles.version': '131072', 'ro.kernel.android.ril': 'yes', 'ro.build.display.id': 'cm_targa-userdebug 4.4.2 KOT49H b0eb3503ea test-keys', 'ro.rommanager.developerid': 'cyanogenmod', 'ro.config.vc_call_vol_steps': '7', 'ro.mot.bindervm.config ': ' 251', 'ro.config.ringtone': 'Orion.ogg', 'persist.ril.mux.sleep': '2', 'dalvik.vm.dexopt-flags': 'm=y', 'ro.media.capture.flashIntensity': '100', 'lte_ril.libpath': '/system/lib/lib-mot-lte-ril.so', 'ro.carrier': 'unknown', 'dalvik.vm.stack-trace-file': '/data/anr/traces.txt', 'ro.product.board': 'targa', 'ro.com.google.clientidbase': 'android-google', 'ro.telephony.default_network': '10', 'mot.proximity.delay': '450', 'ro.horizontalVMM': 'false', 'ro.build.date': '2014\xe5\xb9\xb4 01\xe6\x9c\x88 12\xe6\x97\xa5 \xe6\x98\x9f\xe6\x9c\x9f\xe6\x97\xa5 20:20:19 CST', 'persist.mot.proximity.touch': '1', 'ro.telephony.gsm-routes-us-smsc ': ' 1', 'persist.ril.modem.mode ': '1', 'ro.build.date.utc': '1389529219', 'keyguard.no_require_sim': 'true', 'persist.wlan.ti.calibrated': '0', 'ro.mot.hidden_keyboards': 'evfwd', 'ro.crypto.state': 'unencrypted', 'ro.HorizontalVVM': 'true', 'ro.hdcp.support': '2', 'ro.media.capture.slow.fps': '120', 'ro.media.camcorder.720p': 'mp4,h264,30,10000000,aac,128000,44100,2', 'ro.cdma.nbpcd': '1', 'dalvik.vm.lockprof.threshold': '500', 'persist.sys.dalvik.vm.lib': 'libdvm.so', 'ro.cdma.subscription': '0', 'ro.com.google.clientidbase.ms': 'android-verizon', 'persist.sys.root_access': '3', 'ro.mot.phonemode.vzwglobalphone': '0', 'ro.product.cpu.abi': 'armeabi-v7a', 'ro.cm.version': '11-20140112-UNOFFICIAL-targa', 'ro.url.legal.android_privacy': 'http://www.google.com/intl/%s/mobile/android/basic/privacy.html', 'ro.product.name': 'targa_vzw', 'ro.media.capture.flashMinV': '3300000', 'ro.mot.tmp.telephony.refactor': 'true', 'ro.telephony.call_ring.multiple': 'false', 'rild.libpath': '/system/lib/moto-ril-multimode.so', 'ro.build.selinux': '1', 'ro.media.camcorder.mmsres': 'qvga', 'com.motorola.cg.tnWidth': '160', 'ro.wifi.channels': '', 'ro.modversion': '11-20140112-UNOFFICIAL-targa', 'cdma_ril.libpath': '/system/lib/libmoto_ril.so', 'ro.build.characteristics': 'default', 'ro.config.svdo': 'true', 'ro.media.panorama.defres': '3264x1840', 'persist.service.aplogd.enable': '1', 'persist.mot.usb.mediasync ': ' 1', 'ro.camcorder.zoom': 'true', 'ro.build.version.incremental': 'b0eb3503ea', 'ro.mot.eri': '1', 'ro.media.capture.torchIntensity': '28', 'ro.product.use_charge_counter': '1', 'ro.media.capture.maxres': '5m', 'ro.build.tags': 'test-keys', 'persist.radio.lte.mm.disable': '0', 'ro.media.capture.fast.fps': '4', 'persist.ril.diag.ttydevice': '/dev/usb/tty2-1:1.0', 'ro.build.version.sdk': '19', 'ro.horizontalIM': 'true', 'persist.ril.ecclist': '911,*911,#911', 'ro.media.camcorder.1080p': 'mp4,h264,30,15000000,aac,128000,44100,2', 'ro.vold.switchablepair': '/storage/sdcard0,/storage/sdcard1', 'ro.cdma.data_retry_config': 'max_retries=infinite,0,0,10000,10000,100000,10000,10000,10000,10000,140000,540000,960000', 'ro.product.cpu.abi2': 'armeabi', 'lte_ril.netcfg_to': '90', 'ro.build.user': 'winzone', 'ro.product.locale.language': 'en', 'ro.product.device': 'cdma_targa', 'ro.media.camcorder.vga': 'mp4,h264,30,4000000,aac,128000,44100,2', 'ro.product.locale.region': 'US', 'ro.cm.device': 'targa', 'ro.media.camcorder.d1NTSC': 'mp4,h264,30,6000000,aac,128000,44100,2', 'ro.cm.display.version': '11-20140112-UNOFFICIAL-targa', 'persist.ril.mux.ttydevice': '/dev/ttyO0', 'ro.media.capture.classification': 'classF', 'ro.com.android.wifi-watchlist': 'GoogleGuest', 'persist.hwc.sw_vsync': '1', 'ro.cdma.homesystem': '64,65,76,77,78,79,80,81,82,83', 'ro.service.start.smc': '1', 'dalvik.vm.heapgrowthlimit': '64m', 'ril.dumpstate.timeout': '60', 'ro.horizontalNGM': 'false', 'ro.mot.dpmext': 'true', 'ro.config.notification_sound': 'OnTheHunt.ogg', 'ro.horizontalMOD': 'false', 'ro.bluetooth.request.master': 'true'}
+default_system_dev_certificate = (str) build/target/product/security/testkey
+extfs_sparse_flag         = (str) -s
+extra_recovery_keys       = (str)  build/target/product/security/cm
+fstab                     = (dict) {'/cache': <common.Partition object at 0x1f49ed0>, '/data': <common.Partition object at 0x1f49dd0>, '/system': <common.Partition object at 0x1f49d90>}
+fstab_version             = (int) 2
+mkbootimg_args            = (str) 
+recovery_api_version      = (int) 3
+selinux_fc                = (str) /tmp/targetfiles-fkk5Vp/BOOT/RAMDISK/file_contexts
+tool_extensions           = (str) device/motorola/targa/../common
+update_rename_support     = (str) 1
+use_set_metadata          = (str) 1
+using device-specific extensions in device/motorola/common
+unable to load device-specific module; assuming none
+  running:  openssl pkcs8 -in build/target/product/security/testkey.pk8 -inform DER -nocrypt
+  running:  java -Xmx2048m -jar /home/winzone/android/out/host/linux-x86/framework/signapk.jar -w build/target/product/security/testkey.x509.pem build/target/product/security/testkey.pk8 /tmp/tmp_jWpWH /home/winzone/android/out/target/product/targa/cm_targa-ota-e6f36c227f.zip
+done.
+Package Complete: /home/winzone/android/out/target/product/targa/cm-11-20140113-UNOFFICIAL-targa.zip
+
+
+
+
+
