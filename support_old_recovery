@@ -1,4 +1,6 @@
- use the following to support older recoveries. Basically add "USE_SET_METADATA := false" into BoardConfig.mk of device branch and add the following into build/core/Makefile
+By:temasek@xda
+
+I use the following to support older recoveries. Basically add "USE_SET_METADATA := false" into BoardConfig.mk of device branch and add the following into build/core/Makefile
 
 ifneq ($(USE_SET_METADATA),false)
 $(hide) echo "use_set_metadata=1" >> $(zip_root)/META/misc_info.txt
@@ -11,7 +13,8 @@ https://github.com/temasek/android_b...09cf19ae541728
 
 Example:https://github.com/SlimRoms/android_build/commit/e549178d4a94dbfb6fa630144c3ef003b8159047
 
-2  core/Makefile View file @ e549178
+Showing 1 changed file with 2 additions and 0 deletions. Show Diff Stats
+android/build/core/Makefile View file @ e549178
  @@ -1361,7 +1361,9 @@ ifdef PRODUCT_EXTRA_RECOVERY_KEYS
     $(hide) echo "extra_recovery_keys=$(PRODUCT_EXTRA_RECOVERY_KEYS)" >> $(zip_root)/META/misc_info.txt
   endif
@@ -22,3 +25,4 @@ Example:https://github.com/SlimRoms/android_build/commit/e549178d4a94dbfb6fa6301
     $(call generate-userimage-prop-dictionary, $(zip_root)/META/misc_info.txt)
     @# Zip everything up, preserving symlinks
     $(hide) (cd $(zip_root) && zip -qry ../$(notdir $@) .)
+
