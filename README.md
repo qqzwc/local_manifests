@@ -6,15 +6,23 @@
 
 附：官方参考——如何新建自己的git项目
 
-Create a new repository on the command line
+Create a new repository on the command line/使用命令行新建同步项目
 
 touch README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/qqzwc/local_manifests.git
-git push -u origin master
-Push an existing repository from the command line
 
-git remote add origin https://github.com/qqzwc/local_manifests.git
+git init
+
+git add README.md
+
+git commit -m "修改说明"
+
+git remote add origin https://github.com/qqzwc/项目名称.git
+
+git push -u origin master
+
+
+Then push an existing repository from the command line
+
+git remote add origin https://github.com/qqzwc/项目名称.git
+
 git push -u origin master
