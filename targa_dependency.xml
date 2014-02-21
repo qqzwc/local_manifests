@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote  name="mokee"
+           fetch="ssh://qqzwc@review.mfunz.com:29418"
+           review="review.mfunz.com" />
+
+  <project name="MoKee/android_device_motorola_targa" path="device/motorola/targa" remote="mokee" revision="refs/heads/kk_mkt"/>
+  <project name="MoKee/android_device_motorola_omap4-common" path="device/motorola/omap4-common" remote="mokee" revision="refs/heads/kk_mkt" />
+  <project name="MoKee/android_kernel_motorola_omap4-common" path="kernel/motorola/omap4-common" remote="mokee" revision="refs/heads/kk_mkt"/>
+  <project name="MoKee/android_vendor_motorola_targa" path="vendor/motorola/targa" remote="mokee" revision="refs/heads/kk_mkt"/>
+  <project name="MoKee/android_vendor_motorola_omap4-common" path="vendor/motorola/omap4-common" remote="mokee" revision="refs/heads/kk_mkt"/>
+
+</manifest>
