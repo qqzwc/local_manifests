@@ -1,3 +1,9 @@
+终极解决办法：
+
+修改bootable/recovery/updater/install.c parsed.has_capabilities = false 旧版本的recovery就可刷上了
+
+以下办法对一些ROM是不可用的
+
 By:temasek@xda
 
 I use the following to support older recoveries. Basically add "USE_SET_METADATA := false" into BoardConfig.mk of device branch and add the following into build/core/Makefile
