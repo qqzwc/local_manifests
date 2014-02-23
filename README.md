@@ -26,3 +26,6 @@ Then push an existing repository from the command line
 git remote add origin https://github.com/qqzwc/项目名称.git
 
 git push -u origin master
+
+
+jp1e8CgYjJ4zf0KhAe8QTR25SFOyWGshdxeqq1esijXleGGAT-Sr0LeFQTvBkeMSRfqNx32mm8oiqLyaoaV5R+
